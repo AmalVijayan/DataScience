@@ -50,23 +50,45 @@ regressor = lm(Profit ~ .,data = training_set)
 
 Y_pred = predict(regressor, newdata = test_set)
 
+# 
+# #3 Using backward elimination to obtain the highly significant Independent variable
+# 
+# regrassor = lm(Profit ~ R.D.Spend + Administration + Marketing.Spend + State, data = dataset)
+# summary(regrassor)
+# 
+# #removing the independent variable with highest p_value
+# regressor = lm(Profit ~ R.D.Spend + Administration + Marketing.Spend , data = dataset)
+# summary(regressor)
+# 
+# #removing the independent variable with highest p_value
+# regressor = lm(Profit ~ R.D.Spend + Marketing.Spend , data = dataset)
+# summary(regressor)
+# 
+# #removing the independent variable with highest p_value
+# regressor = lm(Profit ~ R.D.Spend , data = dataset)
+# summary(regressor)
 
-#3 Using backward elimination to obtain the highly significant Independent variable
 
-regrassor = lm(Profit ~ R.D.Spend + Administration + Marketing.Spend + State, data = dataset)
-summary(regrassor)
+#Automating Backward Elimination
 
-#removing the independent variable with highest p_value
-regressor = lm(Profit ~ R.D.Spend + Administration + Marketing.Spend , data = dataset)
-summary(regressor)
+backwardElimination <- function(x, sl) {
+  numVars = length(x)
+  for (i in c(1:numVars)){
+    regressor = lm(formula = Profit ~ ., data = x)
+    maxVar = max(coef(summary(regressor))[c(2:numVars), "Pr(>|t|)"])
+    if (maxVar > sl){
+      j = which(coef(summary(regressor))[c(2:numVars), "Pr(>|t|)"] == maxVar)
+      x = x[, -j]
+    }
+    numVars = numVars - 1
+  }
+  return(summary(regressor))
+}
 
-#removing the independent variable with highest p_value
-regressor = lm(Profit ~ R.D.Spend + Marketing.Spend , data = dataset)
-summary(regressor)
+SL = 0.05
+dataset = dataset[, c(1,2,3,4,5)]
+backwardElimination(training_set, SL)
 
-#removing the independent variable with highest p_value
-regressor = lm(Profit ~ R.D.Spend , data = dataset)
-summary(regressor)
 
 
 ########################Multiple Linear Regression Completed#######################################

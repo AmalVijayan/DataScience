@@ -36,7 +36,7 @@ dataset = dataset[,2:3]
 
 ################################# Data Preprocessing Completed ############################
 
-################################## Ploynomial Regression ##################################
+################################## Support Vector Regression ##################################
 
 
 #1 Create a Support Vector regressor and provide the training set
